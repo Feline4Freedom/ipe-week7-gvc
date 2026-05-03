@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IPE Week 7 — Workshop Activities</title>
+<style>
+:root { --navy: #0F2238; --amber: #E8C547; --steel: #5B7B9A; --cream: #F5F1E8; --bone: #EAE3D2; --ink: #1A1A1A; --mute: #6B7280; --alert: #C03A2B; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--cream); color: var(--ink); font-family: 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
+.hero { background: var(--navy); color: white; padding: 50px 40px; border-bottom: 6px solid var(--amber); }
+.hero .eyebrow { font-size: 12px; letter-spacing: 4px; color: var(--amber); text-transform: uppercase; margin-bottom: 8px; }
+.hero h1 { font-family: Georgia, serif; font-size: 38px; margin-bottom: 8px; }
+.hero .subtitle { color: var(--bone); font-size: 16px; font-style: italic; max-width: 800px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 30px 40px; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 20px; }
+.card { background: white; border: 1px solid var(--bone); border-radius: 8px; padding: 28px; transition: all 0.2s; }
+.card:hover { box-shadow: 0 8px 24px rgba(15,34,56,0.12); transform: translateY(-3px); }
+.card .stage { display: inline-block; background: var(--amber); color: var(--navy); padding: 4px 12px; border-radius: 3px; font-weight: 700; font-size: 12px; letter-spacing: 1px; margin-bottom: 14px; }
+.card h2 { font-family: Georgia, serif; color: var(--navy); font-size: 24px; margin-bottom: 6px; }
+.card .duration { color: var(--steel); font-size: 13px; margin-bottom: 12px; }
+.card p { font-size: 14px; line-height: 1.6; color: var(--ink); margin-bottom: 14px; }
+.card .features { font-size: 13px; padding-left: 18px; margin-bottom: 18px; }
+.card .features li { margin-bottom: 4px; color: var(--mute); }
+.card .features li strong { color: var(--ink); }
+.card a.btn { display: inline-block; background: var(--navy); color: white; padding: 10px 22px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 14px; }
+.card a.btn:hover { background: var(--amber); color: var(--navy); }
+.card a.secondary { display: inline-block; margin-left: 10px; color: var(--steel); font-size: 12px; text-decoration: none; }
+.card a.secondary:hover { color: var(--alert); }
+.notes { background: white; border: 1px solid var(--bone); border-radius: 8px; padding: 22px 28px; margin-top: 22px; }
+.notes h3 { color: var(--navy); margin-bottom: 10px; font-size: 16px; }
+.notes p, .notes li { font-size: 13px; color: var(--mute); line-height: 1.7; }
+.notes ul { padding-left: 22px; }
+.notes code { background: var(--bone); padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+footer { padding: 30px 40px; color: var(--mute); font-size: 12px; text-align: center; border-top: 1px solid var(--bone); margin-top: 40px; }
+@media (max-width: 800px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">IPE · Week 7 · IMAPA Fall 2025</div>
+  <h1>Global Value Chains — Workshop Activities</h1>
+  <div class="subtitle">From Efficiency to Resilience. Two interactive workshops, ~50 minutes each. Open in any modern browser; no installation required.</div>
+</header>
+
+<main class="container">
+  <div class="cards">
+    <article class="card">
+      <span class="stage">STAGE A · 50 MIN</span>
+      <h2>Supply Chain Risk Assessment</h2>
+      <div class="duration">Diagnostic workshop · group of 4–5 · output: risk matrix + infographic</div>
+      <p>Pick one of six multinationals. Map its supply chain. Fill an interactive risk matrix. Identify single-points-of-failure. Generate an executive summary that updates live as you fill the blanks.</p>
+      <ul class="features">
+        <li><strong>6 companies</strong> spanning semis (TSMC, ASML, Foxconn) and minerals (BYD, MP, Glencore)</li>
+        <li><strong>Live SPOF counter</strong> + high-risk node tracker</li>
+        <li><strong>Auto-updating executive summary</strong> with fill-in-the-blank scaffold</li>
+        <li><strong>Print / Save as PDF</strong> for portfolio submission</li>
+      </ul>
+      <a class="btn" href="Week7_Activity_A_RiskAssessment_EN.html">▶ Open Activity A</a>
+    </article>
+
+    <article class="card">
+      <span class="stage">STAGE B · 50 MIN</span>
+      <h2>Pacific Critical Minerals Compact</h2>
+      <div class="duration">Mock negotiation · 6 delegations · output: framework MOU or disagreement statement</div>
+      <p>Six delegations negotiate a friend-shoring framework for critical minerals. Each role unlocks a confidential dossier with secret instructions and walk-out triggers. China observes — and intervenes.</p>
+      <ul class="features">
+        <li><strong>Role gating</strong> — enter delegation code to unlock CLASSIFIED dossier</li>
+        <li><strong>50-min countdown timer</strong> with 7 phase markers</li>
+        <li><strong>3-round position tracker</strong> + final MOU/disagreement form</li>
+        <li><strong>Teacher's god's-eye view</strong> at <code>?teacher=1</code> (with China observer scripts)</li>
+      </ul>
+      <a class="btn" href="Week7_Activity_B_Negotiation_EN.html">▶ Open Activity B</a>
+      <a class="secondary" href="Week7_Activity_B_Negotiation_EN.html?teacher=1">⚠ Teacher view</a>
+    </article>
+  </div>
+
+  <div class="notes" style="background: linear-gradient(90deg, #E3EFE7, #fff); border-left: 5px solid var(--alert);">
+    <h3 style="color: var(--alert);">📝 After the workshop — submit feedback</h3>
+    <p>Both activities have a green <strong>Submit Feedback</strong> button at the bottom. After your group finishes, click it and fill out the short form (≈ 2 minutes). Your group's responses help us improve the workshop and feed into your participation grade.</p>
+    <p style="margin-top: 8px;"><a href="#" onclick="openFeedback(); return false;" style="display: inline-block; background: var(--jade); color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: 700;">📝 Open Feedback Form</a></p>
+  </div>
+
+  <div class="notes">
+    <h3>For Instructors — How to Distribute</h3>
+    <p>Both files are fully self-contained (single HTML file each, no internet required after first open). To run a session:</p>
+    <ul>
+      <li>Activity A — share the same URL with all groups; assign a different company to each group at the start.</li>
+      <li>Activity B — share the public URL <code>Week7_Activity_B_Negotiation_EN.html</code> with everyone, then privately give each delegation its 4-character code. Alternatively, send pre-filled URLs like <code>...?role=US&amp;code=PCM7</code> directly to the assigned group's group-chat.</li>
+      <li>Teacher view — keep <code>...?teacher=1</code> on your laptop only. Never project this to the room.</li>
+      <li>Delegation codes: <code>US=PCM7</code> · <code>JP=KIKU</code> · <code>EU=AURA</code> · <code>KR=HANL</code> · <code>VN-IN=BHAR</code> · <code>AU=BRAV</code></li>
+    </ul>
+    <h3 style="margin-top:14px;">Companion Documents</h3>
+    <ul>
+      <li>Lecture: <code>Week7_GVC_slides_EN.pptx</code> (with bilingual speaker notes) and <code>Week7_GVC_slides_中文.pptx</code></li>
+      <li>Teacher manual: <code>Week7_GVC_教師手冊.docx</code></li>
+      <li>DOCX equivalents of these activities are also in the folder, for printing/handouts.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  Dr. Roger C. Liu · IMAPA · National Sun Yat-sen University · Fall 2025
+</footer>
+
+<script>
+const FEEDBACK_URL = "https://forms.gle/PENDING_REPLACE_AFTER_FORM_CREATED";
+function openFeedback() {
+  if (FEEDBACK_URL.includes("PENDING")) {
+    alert("The feedback form is being set up. Please ask your instructor for the link.");
+    return;
+  }
+  window.open(FEEDBACK_URL, "_blank", "noopener");
+}
+</script>
+
+</body>
+</html>

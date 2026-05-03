@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity B · Pacific Critical Minerals Compact · IPE Week 7</title>
+<style>
+:root {
+  --navy: #0F2238;
+  --navy-deep: #071528;
+  --amber: #E8C547;
+  --amber-deep: #C9A92F;
+  --steel: #5B7B9A;
+  --cream: #F5F1E8;
+  --bone: #EAE3D2;
+  --ink: #1A1A1A;
+  --mute: #6B7280;
+  --alert: #C03A2B;
+  --jade: #3F8268;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--cream); color: var(--ink); font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.55; font-size: 15px; }
+body { min-height: 100vh; padding-bottom: 90px; }
+
+/* Header */
+.hero { background: var(--navy); color: white; padding: 30px 40px 24px; border-bottom: 6px solid var(--amber); position: relative; }
+.hero .eyebrow { font-size: 11px; letter-spacing: 4px; color: var(--amber); text-transform: uppercase; margin-bottom: 8px; }
+.hero h1 { font-family: Georgia, serif; font-size: 30px; font-weight: 700; margin-bottom: 4px; }
+.hero .subtitle { color: var(--bone); font-style: italic; font-size: 14px; }
+.hero .scenario-tag { display: inline-block; background: var(--amber); color: var(--navy); padding: 3px 10px; border-radius: 3px; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-top: 10px; }
+
+/* Timer bar */
+.timer-bar { background: var(--navy-deep); color: white; padding: 12px 40px; display: flex; gap: 24px; align-items: center; border-bottom: 1px solid #1a3047; }
+.timer-display { font-family: 'Courier New', monospace; font-size: 26px; font-weight: 700; color: var(--amber); min-width: 100px; }
+.timer-display.warn { color: var(--alert); animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.phase-tag { background: var(--steel); padding: 4px 10px; border-radius: 3px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+.timer-controls button { background: none; border: 1px solid var(--steel); color: var(--bone); padding: 5px 12px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-right: 4px; }
+.timer-controls button:hover { background: var(--steel); color: white; }
+.timer-bar .spacer { flex: 1; }
+
+/* Container */
+.container { padding: 24px 40px; max-width: 1280px; margin: 0 auto; }
+section { background: white; border: 1px solid var(--bone); border-radius: 6px; padding: 22px 26px; margin-bottom: 20px; }
+section h2 { font-family: Georgia, serif; color: var(--navy); font-size: 22px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--amber); }
+section h3 { color: var(--navy); font-size: 15px; font-weight: 700; margin: 14px 0 8px; }
+section p, section li { font-size: 14px; line-height: 1.7; }
+section ul, section ol { padding-left: 22px; margin: 6px 0; }
+section li { margin-bottom: 5px; }
+.classified-stamp { background: var(--alert); color: white; padding: 4px 10px; border-radius: 3px; font-size: 11px; font-weight: 700; letter-spacing: 2px; display: inline-block; }
+
+/* Issues */
+.issue-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px; }
+.issue-card { padding: 12px 14px; background: var(--cream); border-left: 4px solid var(--amber); border-radius: 0 4px 4px 0; }
+.issue-card .tag { font-family: 'Arial Black', sans-serif; font-size: 18px; color: var(--amber); }
+.issue-card .name { font-weight: 700; margin: 2px 0; font-size: 14px; }
+.issue-card .q { font-size: 12px; color: var(--mute); }
+
+/* Role gate */
+.role-gate { background: var(--navy); color: white; padding: 30px; border-radius: 6px; }
+.role-gate h2 { color: var(--amber); border-bottom: 2px solid var(--amber); }
+.role-gate .gate-row { display: flex; gap: 12px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.role-gate select, .role-gate input { padding: 9px 12px; border-radius: 4px; border: 1px solid var(--steel); background: rgba(255,255,255,0.1); color: white; font-size: 14px; }
+.role-gate select option { background: var(--navy); }
+.role-gate button { background: var(--amber); color: var(--navy); border: none; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+.role-gate button:hover { background: var(--amber-deep); }
+.role-gate .hint { font-size: 12px; color: var(--bone); margin-top: 10px; }
+.role-gate .delegations { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; font-size: 13px; }
+.role-gate .delegations .delegation { padding: 8px 12px; background: rgba(255,255,255,0.06); border-radius: 4px; border: 1px solid var(--steel); }
+
+/* Dossier */
+.dossier-panel { display: none; }
+.dossier-panel.show { display: block; }
+.dossier-headline { background: linear-gradient(90deg, #FBE5E2, #fff); border-left: 6px solid var(--alert); padding: 14px 18px; border-radius: 0 4px 4px 0; margin-bottom: 16px; }
+.dossier-headline h3 { color: var(--alert); margin: 0 0 4px; font-size: 16px; }
+.dossier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.dossier-section { padding: 14px; background: var(--cream); border-radius: 4px; }
+.dossier-section h4 { font-size: 12px; letter-spacing: 1px; color: var(--steel); text-transform: uppercase; margin-bottom: 8px; }
+.dossier-section ul { padding-left: 18px; font-size: 13px; }
+.dossier-section ul li { margin-bottom: 4px; }
+.dossier-secret { background: #FBE5E2; border-left: 4px solid var(--alert); padding: 14px 18px; border-radius: 0 4px 4px 0; margin: 14px 0; }
+.dossier-secret h4 { color: var(--alert); }
+.walkout-box { background: var(--navy); color: white; padding: 16px 20px; border-radius: 4px; margin-top: 14px; border-left: 6px solid var(--alert); }
+.walkout-box h4 { color: var(--amber); margin-bottom: 6px; font-size: 13px; }
+
+/* Relations table */
+table.relations { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+table.relations th, table.relations td { padding: 8px 12px; border-bottom: 1px solid var(--bone); text-align: left; }
+table.relations th { background: var(--navy); color: white; font-size: 11px; letter-spacing: 0.5px; }
+table.relations tr:nth-child(even) td { background: #FAF8F2; }
+table.relations td:first-child { font-weight: 700; color: var(--navy); width: 100px; }
+
+/* Negotiation tracker */
+.tracker-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tracker-tabs button { background: var(--bone); color: var(--ink); border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px 4px 0 0; font-size: 13px; font-weight: 700; }
+.tracker-tabs button.active { background: var(--navy); color: white; }
+.round-panel { display: none; padding: 14px; background: var(--cream); border-radius: 0 4px 4px 4px; }
+.round-panel.show { display: block; }
+.round-panel .issue-row { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 10px; align-items: start; margin-bottom: 8px; }
+.round-panel .issue-row .label { font-weight: 700; color: var(--navy); padding-top: 8px; }
+.round-panel textarea { width: 100%; padding: 8px; border: 1px solid var(--bone); border-radius: 3px; font-size: 13px; min-height: 50px; resize: vertical; font-family: inherit; }
+.round-panel textarea:focus { outline: none; border-color: var(--steel); }
+.round-panel .col-head { font-size: 11px; color: var(--mute); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+/* Final submission */
+.submission-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+.submission-toggle button { flex: 1; padding: 12px; border: 2px solid var(--bone); background: white; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 700; }
+.submission-toggle button.active { border-color: var(--navy); background: var(--navy); color: white; }
+.submission-form { padding: 16px; background: var(--cream); border-radius: 4px; }
+.submission-form .field { margin-bottom: 14px; }
+.submission-form label { display: block; font-size: 12px; color: var(--steel); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+.submission-form textarea { width: 100%; padding: 10px; border: 1px solid var(--bone); border-radius: 3px; font-size: 13px; min-height: 60px; font-family: inherit; resize: vertical; }
+.submission-form textarea:focus { outline: none; border-color: var(--steel); }
+
+/* Teacher view */
+.teacher-banner { background: var(--alert); color: white; padding: 10px 40px; text-align: center; font-weight: 700; letter-spacing: 2px; font-size: 12px; }
+.teacher-banner.show { display: block; }
+
+.teacher-tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+.teacher-tabs button { background: var(--bone); border: none; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 12px; }
+.teacher-tabs button.active { background: var(--navy); color: white; }
+
+.china-script { background: linear-gradient(90deg, #FFE7E5, #fff); border-left: 5px solid var(--alert); padding: 14px 18px; margin-bottom: 12px; border-radius: 0 4px 4px 0; }
+.china-script h4 { color: var(--alert); font-size: 13px; margin-bottom: 6px; }
+.china-script .dialogue { font-style: italic; color: var(--ink); font-size: 14px; line-height: 1.7; }
+
+.conflict-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.conflict-table th, .conflict-table td { padding: 6px 8px; border-bottom: 1px solid var(--bone); text-align: left; }
+.conflict-table th { background: var(--navy); color: white; font-size: 11px; }
+.conflict-table tr:nth-child(even) td { background: #FAF8F2; }
+
+/* Action bar */
+.action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy); padding: 12px 40px; display: flex; gap: 12px; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 100; }
+.action-bar button { padding: 8px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 700; }
+.btn-print { background: var(--amber); color: var(--navy); }
+.btn-print:hover { background: var(--amber-deep); }
+.btn-reset { background: transparent; color: var(--bone); border: 1px solid var(--steel) !important; }
+.btn-reset:hover { background: var(--alert); border-color: var(--alert) !important; color: white; }
+.btn-switch-role { background: var(--steel); color: white; }
+.btn-switch-role:hover { background: var(--navy-deep); }
+.btn-feedback { background: var(--jade); color: white; border: none; cursor: pointer; }
+.btn-feedback:hover { background: #2D6650; }
+.action-bar .spacer { flex: 1; }
+.action-bar .footnote { color: var(--steel); font-size: 11px; }
+
+@media print {
+  .action-bar, .timer-bar, .timer-controls { display: none !important; }
+  body { background: white; }
+  section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  .role-gate { display: none; }
+}
+@media (max-width: 900px) {
+  .issue-grid, .dossier-grid { grid-template-columns: 1fr; }
+  .role-gate .delegations { grid-template-columns: repeat(2, 1fr); }
+  .round-panel .issue-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="teacher-banner" id="teacherBanner" style="display:none;">⚠ TEACHER VIEW · GOD'S-EYE — DO NOT PROJECT TO STUDENTS ⚠</div>
+
+<header class="hero">
+  <div class="eyebrow">IPE · WEEK 7 · ACTIVITY B</div>
+  <h1>Pacific Critical Minerals Compact — Round One</h1>
+  <div class="subtitle">A 50-minute mock ministerial negotiation. Six delegations, four issues, one observer in the room.</div>
+  <div class="scenario-tag">📅 Scenario time: 28 April 2026 · Tokyo</div>
+</header>
+
+<div class="timer-bar">
+  <span class="phase-tag" id="phaseTag">PHASE · Setup</span>
+  <div class="timer-display" id="timerDisplay">50:00</div>
+  <div class="timer-controls">
+    <button onclick="startTimer()">▶ Start</button>
+    <button onclick="pauseTimer()">⏸ Pause</button>
+    <button onclick="resetTimer()">↻ Reset</button>
+  </div>
+  <span class="spacer"></span>
+  <span style="color:var(--bone); font-size:12px;">Round timing: 5 (open) → 10 (A+B) → 5 (CN1) → 10 (C) → 10 (D) → 5 (write) → 5 (close)</span>
+</div>
+
+<main class="container">
+
+<!-- =========================================== -->
+<!-- PUBLIC SCENARIO (always visible) -->
+<!-- =========================================== -->
+<section>
+  <h2>Public Scenario · For All Delegations</h2>
+  <h3>Background</h3>
+  <p>Between 2024 and 2025, global critical-mineral supply chains experienced a series of shocks:</p>
+  <ol>
+    <li>China launched export licensing on gallium (2023/8), graphite + rare-earth refining tech (2023/12), and antimony / drone-grade materials (2024).</li>
+    <li>The US IRA's critical-mineral sourcing clause fully excluded Chinese content from 2025; the EU's CRMA entered execution.</li>
+    <li>Indonesia's nickel ban continued despite a WTO ruling, inspiring DRC, Bolivia, and Central Asian states to pursue "resource nationalism 2.0."</li>
+    <li>The new US administration (Nov 2025) imposed reciprocal tariffs on Mexico and Canada, damaging trust among allies.</li>
+  </ol>
+  <p>Against this backdrop, G7 + Korea + Australia + Vietnam + India proposed the <strong>Pacific Critical Minerals Compact (PCMC)</strong> at Davos 2026/2. This is the first ministerial-round negotiation. Four issues are on the table.</p>
+
+  <h3>The Four Issues</h3>
+  <div class="issue-grid">
+    <div class="issue-card">
+      <span class="tag">A</span>
+      <div class="name">Membership & Decision Rules</div>
+      <div class="q">Who qualifies? Majority vote or consensus? Exit clauses?</div>
+    </div>
+    <div class="issue-card">
+      <span class="tag">B</span>
+      <div class="name">Friend-shoring Thresholds</div>
+      <div class="q">How is "friend" defined? Investment screening, export controls, member-content quotas?</div>
+    </div>
+    <div class="issue-card">
+      <span class="tag">C</span>
+      <div class="name">Price Stabilization & Strategic Reserve</div>
+      <div class="q">Floor price? Multilateral strategic reserve? Who pays? Reserve scale?</div>
+    </div>
+    <div class="issue-card">
+      <span class="tag">D</span>
+      <div class="name">Collective Insurance Against Chinese Reprisal</div>
+      <div class="q">If China sanctions a member individually, how do others insure? "Attack on one = attack on all"?</div>
+    </div>
+  </div>
+
+  <h3>Six Delegations</h3>
+  <p style="font-size:13px;">🇺🇸 United States · 🇯🇵 Japan · 🇪🇺 European Union · 🇰🇷 South Korea · 🇻🇳🇮🇳 Vietnam-India Bloc · 🇦🇺 Australia. China sits as outside observer (played by the instructor; may intervene up to 3 times).</p>
+
+  <h3>Schedule (50 min)</h3>
+  <ol>
+    <li><strong>5 min</strong> — Each delegation gives a 30-second opening statement.</li>
+    <li><strong>10 min</strong> — Issues A + B negotiated in parallel. Shuttle diplomacy allowed (one rep may visit other delegations).</li>
+    <li><strong>5 min</strong> — China observer's first intervention.</li>
+    <li><strong>10 min</strong> — Plenary on Issue C.</li>
+    <li><strong>10 min</strong> — Plenary on Issue D. China observer's second intervention.</li>
+    <li><strong>5 min</strong> — Drafting framework MOU or disagreement statement.</li>
+    <li><strong>5 min</strong> — 1-minute final statements + instructor wrap-up.</li>
+  </ol>
+
+  <h3>Final Deliverable (mandatory)</h3>
+  <p>Within 50 minutes, produce one of:</p>
+  <ul>
+    <li>(1) <strong>Framework MOU</strong> — initial consensus on the four issues.</li>
+    <li>(2) <strong>Disagreement Statement</strong> — honestly list the three core points where consensus failed and each side's position.</li>
+  </ul>
+  <p style="color:var(--mute); font-size:13px;">Either is a legitimate output. Failing to agree is itself a signal.</p>
+</section>
+
+<!-- =========================================== -->
+<!-- ROLE GATE -->
+<!-- =========================================== -->
+<section class="role-gate" id="roleGate">
+  <h2 style="color: var(--amber); border-color: var(--amber);">🔐 Delegation Access</h2>
+  <p>To unlock your CLASSIFIED dossier, select your delegation. Each delegation has a unique code; the instructor will distribute codes during setup.</p>
+  <div class="gate-row">
+    <select id="roleSelect" style="min-width:240px;">
+      <option value="">— Select your delegation —</option>
+      <option value="US">🇺🇸 United States</option>
+      <option value="JP">🇯🇵 Japan</option>
+      <option value="EU">🇪🇺 European Union</option>
+      <option value="KR">🇰🇷 South Korea</option>
+      <option value="VN-IN">🇻🇳🇮🇳 Vietnam-India Bloc</option>
+      <option value="AU">🇦🇺 Australia</option>
+    </select>
+    <input type="text" id="roleCode" placeholder="Delegation code (4 chars)" style="width:160px;">
+    <button onclick="unlockRole()">Unlock Dossier</button>
+  </div>
+  <div class="hint">Codes (for instructor's distribution): US=PCM7 · JP=KIKU · EU=AURA · KR=HANL · VN-IN=BHAR · AU=BRAV</div>
+  <div class="hint" style="margin-top:8px;">Or append <code>?role=US&amp;code=PCM7</code> to the URL to auto-load. Append <code>?teacher=1</code> for the god's-eye view.</div>
+</section>
+
+<!-- =========================================== -->
+<!-- DOSSIER PANEL (revealed on unlock) -->
+<!-- =========================================== -->
+<section class="dossier-panel" id="dossierPanel">
+  <h2 id="dossierTitle"></h2>
+  <span class="classified-stamp">⚠ CLASSIFIED · DELEGATION-ONLY</span>
+  <div class="dossier-headline">
+    <h3>HEADLINE</h3>
+    <div id="dossierHeadline"></div>
+  </div>
+  <h3>1 · Strategic Objectives</h3>
+  <ol id="dossierObjectives"></ol>
+  <div class="dossier-grid" style="margin-top:14px;">
+    <div class="dossier-section">
+      <h4>2 · Leverage</h4>
+      <ul id="dossierLeverage"></ul>
+    </div>
+    <div class="dossier-section">
+      <h4>3 · Constraints</h4>
+      <ul id="dossierConstraints"></ul>
+    </div>
+  </div>
+  <div class="dossier-secret">
+    <h4>4 · SECRET NEGOTIATION INSTRUCTIONS</h4>
+    <ul id="dossierSecret"></ul>
+  </div>
+  <div class="walkout-box">
+    <h4>⚠ ABSOLUTE BOTTOM LINE (Walk-Out Trigger)</h4>
+    <div id="dossierBottomLine"></div>
+  </div>
+  <h3 style="margin-top:18px;">6 · Relations With Other Delegations</h3>
+  <table class="relations">
+    <thead><tr><th>Code</th><th>Relationship Posture</th></tr></thead>
+    <tbody id="dossierRelations"></tbody>
+  </table>
+  <h3>7 · Tactical Reminders</h3>
+  <ul>
+    <li>Open every statement with a position framer ("Our delegation's position on Issue X is…").</li>
+    <li>Watch the China observer's interventions — assess whether they are probes, threats, or genuine offers.</li>
+    <li>Alliances are allowed, but each alliance reduces a tradeable bargaining chip.</li>
+    <li>If you decide to walk out, signal the instructor 1 minute prior so pacing can adjust.</li>
+  </ul>
+</section>
+
+<!-- =========================================== -->
+<!-- NEGOTIATION TRACKER -->
+<!-- =========================================== -->
+<section class="dossier-panel" id="trackerPanel">
+  <h2>Negotiation Tracker · Three Rounds</h2>
+  <p style="color:var(--mute); font-size:13px;">Log your delegation's evolving position on each issue across rounds. Use this to draft your final submission below.</p>
+  <div class="tracker-tabs">
+    <button class="tab-btn active" data-tab="r1" onclick="switchRound('r1')">Round 1 · A + B</button>
+    <button class="tab-btn" data-tab="r2" onclick="switchRound('r2')">Round 2 · Issue C</button>
+    <button class="tab-btn" data-tab="r3" onclick="switchRound('r3')">Round 3 · Issue D</button>
+  </div>
+  <div class="round-panel show" id="r1">
+    <div class="issue-row">
+      <div class="label">Issue A</div>
+      <div>
+        <div class="col-head">Our position</div>
+        <textarea placeholder="What we're offering / demanding"></textarea>
+      </div>
+      <div>
+        <div class="col-head">Where we'll yield</div>
+        <textarea placeholder="What we can trade away"></textarea>
+      </div>
+    </div>
+    <div class="issue-row">
+      <div class="label">Issue B</div>
+      <div>
+        <div class="col-head">Our position</div>
+        <textarea placeholder="What we're offering / demanding"></textarea>
+      </div>
+      <div>
+        <div class="col-head">Where we'll yield</div>
+        <textarea placeholder="What we can trade away"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="round-panel" id="r2">
+    <div class="issue-row">
+      <div class="label">Issue C</div>
+      <div>
+        <div class="col-head">Our position</div>
+        <textarea placeholder="Floor price? Reserve location? Our funding share?"></textarea>
+      </div>
+      <div>
+        <div class="col-head">Where we'll yield</div>
+        <textarea placeholder="Trades available"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="round-panel" id="r3">
+    <div class="issue-row">
+      <div class="label">Issue D</div>
+      <div>
+        <div class="col-head">Our position</div>
+        <textarea placeholder="Collective insurance — yes / no / conditional?"></textarea>
+      </div>
+      <div>
+        <div class="col-head">Where we'll yield</div>
+        <textarea placeholder="Trades available"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- FINAL SUBMISSION -->
+<!-- =========================================== -->
+<section class="dossier-panel" id="submissionPanel">
+  <h2>Final Submission</h2>
+  <p style="font-size:13px;">Pick one form. Fill it in. Print or screenshot before time runs out.</p>
+  <div class="submission-toggle">
+    <button class="sub-btn active" data-form="mou" onclick="switchSub('mou')">📜 Framework MOU</button>
+    <button class="sub-btn" data-form="diss" onclick="switchSub('diss')">⚠ Disagreement Statement</button>
+  </div>
+  <div class="submission-form" id="mouForm">
+    <h3>Framework MOU — Pacific Critical Minerals Compact</h3>
+    <div class="field"><label>Issue A · Membership & Decision Rules — agreed text</label><textarea></textarea></div>
+    <div class="field"><label>Issue B · Friend-shoring Thresholds — agreed text</label><textarea></textarea></div>
+    <div class="field"><label>Issue C · Price Stabilization & Strategic Reserve — agreed text</label><textarea></textarea></div>
+    <div class="field"><label>Issue D · Collective Insurance — agreed text</label><textarea></textarea></div>
+    <div class="field"><label>Outstanding caveats / reservations</label><textarea></textarea></div>
+    <div class="field"><label>Signatories (initials)</label><textarea style="min-height:30px;"></textarea></div>
+  </div>
+  <div class="submission-form" id="dissForm" style="display:none;">
+    <h3>Disagreement Statement — Why We Could Not Agree</h3>
+    <div class="field"><label>Core divergence #1 — issue + each side's position</label><textarea></textarea></div>
+    <div class="field"><label>Core divergence #2 — issue + each side's position</label><textarea></textarea></div>
+    <div class="field"><label>Core divergence #3 — issue + each side's position</label><textarea></textarea></div>
+    <div class="field"><label>What would change the situation? — conditions for resumed talks</label><textarea></textarea></div>
+    <div class="field"><label>Signatories (initials of those who endorse this statement)</label><textarea style="min-height:30px;"></textarea></div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- TEACHER GOD'S-VIEW -->
+<!-- =========================================== -->
+<section id="teacherPanel" style="display:none; background: linear-gradient(180deg, #FBE5E2, white); border: 2px solid var(--alert);">
+  <h2 style="color: var(--alert); border-color: var(--alert);">⚠ TEACHER GOD'S-EYE VIEW</h2>
+  <p style="font-style:italic; color:var(--mute);">Includes all 6 delegations' confidential dossiers, China observer scripts, conflict prediction matrix, and wrap-up guidance. <strong>Do not project this view to students.</strong></p>
+
+  <h3>Conflict Prediction Matrix</h3>
+  <table class="conflict-table">
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th>China-content threshold</th>
+        <th>Strategic reserve stance</th>
+        <th>Collective insurance</th>
+        <th>Walk-out trigger</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>US</td><td>25% (35% privately OK)</td><td>Wants US-led</td><td>Hard: attack-on-one</td><td>Issue B with no quantitative threshold</td></tr>
+      <tr><td>JP</td><td>35% privately preferred</td><td>Tokyo-led proposal</td><td>Wants exception clause</td><td>Issue D too hardline</td></tr>
+      <tr><td>EU</td><td>35% (cannot accept 25%)</td><td>Neutral; EU mgmt preferred</td><td>Refuses hard clause (autonomy)</td><td>Issue D becomes "NATO economic"</td></tr>
+      <tr><td>KR</td><td>35% + 5-yr transition</td><td>Refuses large funding</td><td>Neutral, follows Japan</td><td>Reserve funding > $5B</td></tr>
+      <tr><td>VN-IN</td><td>40% + 5-yr transition</td><td>Neutral, demands benefit-sharing</td><td>Refuses (fears Chinese targeting)</td><td>List-treatment + no transition</td></tr>
+      <tr><td>AU</td><td>35%</td><td>Demands AU-managed</td><td>Supports w/ exception</td><td>Reserve not AU-managed</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px;">China Observer — 3-Round Intervention Scripts</h3>
+
+  <div class="china-script">
+    <h4>Round 1 — Probing (mid Issue A/B)</h4>
+    <div class="dialogue">"The People's Republic of China observes this meeting. We remind all parties: the stability of critical-mineral supply chains is a shared interest of global economic development. Any attempt to form a 'de-China' bloc will be met with reciprocal lawful response. We urge restraint."</div>
+  </div>
+
+  <div class="china-script">
+    <h4>Round 2 — Individual Pressure (end Issue C) — pick the most exposed delegation</h4>
+    <div class="dialogue"><strong>To Korea:</strong> "We note the South Korean delegation's remarks. We remind our Korean friends: our administrative review process for K-Battery precursor exports is currently functioning smoothly. Any unfriendly multilateral arrangements may prompt us to revisit those review standards."</div>
+    <div class="dialogue" style="margin-top:8px;"><strong>To Australia:</strong> "We note Australia's commitment to iron-ore supply. We remind our Australian friends: the iron-ore market is a two-way relationship. Sixty-plus Chinese steel mills are reviewing their 2027 long-term contract arrangements."</div>
+  </div>
+
+  <div class="china-script">
+    <h4>Round 3 — Final move (mid Issue D) — pick threat OR temptation</h4>
+    <div class="dialogue"><strong style="color:var(--alert);">THREAT VERSION:</strong> "The People's Republic of China formally states: should this compact include any clause of collective reprisal against China, we will immediately activate reciprocal measures, including but not limited to: expanded rare-earth technology export bans, non-tariff retaliation against specific countries, and compliance review of PCMC member firms operating in China."</div>
+    <div class="dialogue" style="margin-top:8px;"><strong style="color:var(--jade);">TEMPTATION VERSION:</strong> "The People's Republic of China offers a constructive proposal: we are prepared to sign 'Stable Supply Bilateral Memoranda' with any individual PCMC member, covering critical minerals and refined products. We believe bilateral solutions are superior to confrontational multilateral blocs."</div>
+  </div>
+
+  <h3>Wrap-Up Script (5 min)</h3>
+  <ul>
+    <li><strong>If a walk-out happened:</strong> "That delegation just demonstrated bottom-line thinking — exactly what real diplomacy requires."</li>
+    <li><strong>If a framework was reached:</strong> Ask: "Who paid the most for this consensus?"</li>
+    <li><strong>If talks collapsed:</strong> "Talkative gridlock is also real diplomacy. The disagreement statement we drafted is itself a useful artifact."</li>
+    <li>Connect to Yellen 2022: the political variability of "friend."</li>
+    <li>Connect to Farrell & Newman: weaponized interdependence is bidirectional.</li>
+    <li>Connect to GVC trilemma: each delegation made a different efficiency-resilience-alignment trade-off.</li>
+  </ul>
+
+  <h3>Reflection Prompts (assign for next week)</h3>
+  <ul>
+    <li>Which issue was most painful for your delegation? Why?</li>
+    <li>If you played China observer, would you choose threat or temptation? What does that choice reveal?</li>
+    <li>Compared with real-world MSP, Quad, IPEF — is this compact more or less viable?</li>
+  </ul>
+
+  <h3>Full Dossier Library</h3>
+  <div class="teacher-tabs" id="teacherTabs"></div>
+  <div id="teacherDossierContent" style="margin-top:12px;"></div>
+</section>
+
+</main>
+
+<!-- Action bar -->
+<div class="action-bar">
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+  <button class="btn-feedback" onclick="openFeedback()">📝 Submit Feedback</button>
+  <button class="btn-switch-role" onclick="switchRole()">↔ Switch role</button>
+  <button class="btn-reset" onclick="resetAll()">↻ Reset</button>
+  <span class="spacer"></span>
+  <span class="footnote">IPE Week 7 · Activity B · Dr. Roger C. Liu · IMAPA Fall 2025</span>
+</div>
+
+<script>
+// ============================================================
+// Role data
+// ============================================================
+const ROLES = {
+  US: {
+    flag: "🇺🇸", name: "United States",
+    code: "PCM7",
+    headline: "Turn PCMC into a 'de-China minerals club.' This priority dwarfs the other three.",
+    objectives: [
+      "Primary: establish a US-style friend-shoring standard — no PCMC member's critical-mineral chain may have >25% Chinese content.",
+      "Secondary: convert IRA's subsidy threshold into PCMC's membership threshold.",
+      "Bottom line: absolutely no 'gray zone' status for China (e.g., 'constructive partner')."
+    ],
+    leverage: [
+      "Largest consumer market in EVs, defense, AI.",
+      "DPA Title III + IRA + Pentagon procurement — triple-fueled offer.",
+      "MSP 14-partner coordination already operational."
+    ],
+    constraints: [
+      "New administration (Nov 2025) imposed tariffs on Mexico/Canada — ally trust damaged.",
+      "Congressional split: MAGA wing skeptical of 'paying foreigners.'",
+      "Labor vote: prefers domestic manufacturing over offshoring to Vietnam/India."
+    ],
+    secret: [
+      "Hint privately: if Japan/Korea/Australia balk at 25%, US can flex to 35%.",
+      "To Vietnam-India bloc: offer additional SBA/DFC investment in exchange for support on Issue D.",
+      "Taboo: never publicly commit to extending IRA (domestic politics)."
+    ],
+    bottomLine: "If Issue B has no quantitative friend-shoring threshold, the US will not sign (walking out is on the table).",
+    relations: [
+      ["JP", "Tier-1 ally, but Japan has reservations on 25% threshold"],
+      ["EU", "Strategic partner, but EU dislikes US 'list-style governance'"],
+      ["KR", "Ally, but K-Battery is heavily China-dependent mid-stream"],
+      ["VN-IN", "Important friend-shoring host — give carrots"],
+      ["AU", "Most natural ally; mining-side pivotal"]
+    ]
+  },
+  JP: {
+    flag: "🇯🇵", name: "Japan",
+    code: "KIKU",
+    headline: "PCMC is Japan's chance to multilateralize Economic Security Promotion. But beware US over-binding.",
+    objectives: [
+      "Primary: build stable supply mechanisms — especially rare earths, magnesium, lithium.",
+      "Secondary: defend Japan's existing Economic Security Promotion Act framework — don't let it be replaced by external standards.",
+      "Bottom line: do not sacrifice ties with Korea or ASEAN — Japan needs them as industrial partners."
+    ],
+    leverage: [
+      "JOGMEC's long-built mineral assets in Australia, South America, ASEAN.",
+      "Sogo shosha global commercial network (Mitsui, Mitsubishi, Marubeni).",
+      "G7 presidency experience + Hiroshima Summit critical-minerals initiative."
+    ],
+    constraints: [
+      "Still high trade dependence on China (especially mid-stream parts).",
+      "Domestic firms (especially auto) wary of hard friend-shoring.",
+      "Risk of historic-issue flare-up with Korea (shadow of 2018–19 export-control dispute)."
+    ],
+    secret: [
+      "Privately prefer 35% China-content threshold over 25% (gives Japanese firms breathing room).",
+      "On Issue C, propose a Japan-led 'Asia-Pacific critical-minerals strategic reserve' (Japan has experience since 1986 rare-earth reserves).",
+      "To EU: find common ground on 'less American-style.'",
+      "Taboo: do not publicly antagonize China (China is Japan's largest trade partner)."
+    ],
+    bottomLine: "If Issue D's collective insurance is too hard (e.g., 'attack on one = attack on all'), Japan demands an exception clause.",
+    relations: [
+      ["US", "Tier-1 ally, but preserve strategic autonomy"],
+      ["EU", "Ideologically aligned — coalition against 'list-style governance'"],
+      ["KR", "Sensitive; historical baggage; cooperation possible on minerals"],
+      ["VN-IN", "Important industrial partners; offer ODA for support"],
+      ["AU", "JOGMEC has deep AU assets; close relationship"]
+    ]
+  },
+  EU: {
+    flag: "🇪🇺", name: "European Union",
+    code: "AURA",
+    headline: "EU pushes 'rule-based friend-shoring,' not 'list-based friend-shoring.'",
+    objectives: [
+      "Primary: convert CRMA's 35% single-third-country cap into PCMC's standard (not US 25%).",
+      "Secondary: refuse 'attack on one = attack on all' clause — EU foreign-policy autonomy forbids it.",
+      "Bottom line: do not let PCMC become 'NATO economic edition' — would split EU internally."
+    ],
+    leverage: [
+      "World's #2 consumer market + regulatory power (CBAM, CRMA, Battery Regulation).",
+      "European Raw Materials Alliance + Global Gateway investment promise (€300B).",
+      "Already imposed +17% anti-subsidy tariff on Chinese EVs — demonstrated 'rule-based reprisal' capability."
+    ],
+    constraints: [
+      "27 member states diverge: France/Germany active; Hungary, Bulgaria deep with China.",
+      "Distrust of US tariff volatility (EU itself was a victim).",
+      "Green transition still depends on Chinese batteries and EVs short-term."
+    ],
+    secret: [
+      "Coordinate with Japan against US 'over-list governance.'",
+      "To Vietnam-India: emphasize Global Gateway investment (EU has money, fewer strings attached).",
+      "Bottom line negotiable: 35% threshold OK; 25% not.",
+      "Taboo: do not commit to specific 'anti-China measures' on the floor (preserve foreign-policy autonomy)."
+    ],
+    bottomLine: "If Issue D becomes a hard 'attack on one = attack on all' clause, EU insists on an EU-foreign-policy-autonomy exception.",
+    relations: [
+      ["US", "Strategic partner, but values clash (rules vs. lists)"],
+      ["JP", "Natural ally — coalition to balance US"],
+      ["KR", "Ally, smaller role"],
+      ["VN-IN", "Important market; Global Gateway investment target"],
+      ["AU", "FTA in negotiation; friendly"]
+    ]
+  },
+  KR: {
+    flag: "🇰🇷", name: "South Korea",
+    code: "HANL",
+    headline: "PCMC is opportunity-and-peril for Korea. K-Battery is the cash cow, but mid-stream is heavily China-dependent.",
+    objectives: [
+      "Primary: protect LG Energy / Samsung SDI / SK On's Chinese supply chain (short-term decoupling = battery industry collapse).",
+      "Secondary: secure 'transition clause' — 5-year buffer for K-Battery.",
+      "Bottom line: PCMC must not directly ban Korean firms from purchasing battery precursors in China."
+    ],
+    leverage: [
+      "Three of the world's top battery makers (LG, Samsung SDI, SK On).",
+      "KORUS FTA + IRA-eligible status.",
+      "Mineral investments in Australia, Indonesia, South America (POSCO lithium)."
+    ],
+    constraints: [
+      "Mid-stream dependence on China is extreme (>70% of battery precursors).",
+      "China-Korea political relations frozen (post-THAAD residue + Chip 4 hesitation).",
+      "Domestic political swings cause volatile foreign policy."
+    ],
+    secret: [
+      "Can accept 35% threshold but demand 'phased achievement' (5 years).",
+      "Coordinate with VN-IN bloc to demand 'transition clause.'",
+      "To Japan: friendly but don't actively ally (domestic anti-Japan sentiment).",
+      "Taboo: do not directly challenge China (fear of K-Battery export licensing reprisal)."
+    ],
+    bottomLine: "If Issue C requires Korean funding > $5B for the strategic reserve, refuse firmly (domestically not feasible).",
+    relations: [
+      ["US", "FTA + IRA partner, but treated as junior"],
+      ["JP", "Sensitive; cooperate without intimacy"],
+      ["EU", "Ally, smaller role"],
+      ["VN-IN", "Natural ally for transition clause demand"],
+      ["AU", "POSCO investment partner; close"]
+    ]
+  },
+  "VN-IN": {
+    flag: "🇻🇳🇮🇳", name: "Vietnam-India Bloc",
+    code: "BHAR",
+    headline: "Bloc strategy: bind as 'emerging economies' and charge G7 an entry fee.",
+    objectives: [
+      "Primary: write 'membership' threshold loosely so VN/IN aren't excluded.",
+      "Secondary: extract massive technology transfer + FDI commitments — turn friend-shoring into 'friend-shore aid.'",
+      "Bottom line: do not accept US 25% China-content threshold (would kill Vietnamese manufacturing)."
+    ],
+    leverage: [
+      "Vietnam: largest China+1 winner, $25B+ annual FDI inflows.",
+      "India: 1.4B-person market, Modi's 'Made in India' push.",
+      "Both still maintain trade and diplomatic ties with China (hedging space)."
+    ],
+    constraints: [
+      "If openly aligning too hard, China will retaliate (China is the largest trade partner of both).",
+      "Vietnam's supply-chain depth is shallow; 35% threshold not feasible short-term.",
+      "Indian conglomerates (Tata, Reliance) have differing calculus on friend-shoring."
+    ],
+    secret: [
+      "Strategy: position as 'Issue D's swing voter' — both US and EU will need your support.",
+      "Hint: if G7 commits $20B in investment, can accept 40% threshold + 5-yr transition.",
+      "To Korea: natural ally — joint demand for transition clauses.",
+      "To EU: emphasize Global Gateway investment.",
+      "Taboo: do not actively offer anti-China commitments (be the one who's begged, not the one who gives)."
+    ],
+    bottomLine: "If PCMC becomes 'list-style governance' with no transition clause, the bloc walks out collectively.",
+    relations: [
+      ["US", "Important financier, but distrust runs high"],
+      ["JP", "ODA source; close"],
+      ["EU", "Global Gateway target; friendly"],
+      ["KR", "Natural ally"],
+      ["AU", "Mineral source; cooperative"]
+    ]
+  },
+  AU: {
+    flag: "🇦🇺", name: "Australia",
+    code: "BRAV",
+    headline: "Australia is PCMC's only large-scale mineral supplier. Strongest hand — but watch the optics.",
+    objectives: [
+      "Primary: make Australia PCMC's 'default supplier' — first call for all members.",
+      "Secondary: secure 'green-upgrade subsidy' — keep mineral value-add (lithium refining, rare-earth refining) onshore in Australia.",
+      "Bottom line: do not accept any 'mineral export quota' or 'price cap.'"
+    ],
+    leverage: [
+      "World's largest spodumene (lithium) producer (Greenbushes etc.).",
+      "US IRA, Japan JOGMEC, Korea POSCO all already invested heavily in Australia.",
+      "AUKUS security backing as political insurance."
+    ],
+    constraints: [
+      "China remains the largest buyer of Australian iron ore ($80B+/year).",
+      "Wary of US policy volatility (fear of being treated as 'second-class ally').",
+      "Domestic Indigenous land rights + ESG limits expansion speed."
+    ],
+    secret: [
+      "Hard demand: strategic reserve (Issue C) must be 'physically stored in Australia' (management fees + strategic location).",
+      "On Issue B: support 35% threshold (allows friend-shoring AND keeps China iron-ore custom).",
+      "To Indo-Pacific friends: offer 5-year stable-supply contracts in exchange for support.",
+      "Taboo: never publicly commit to 'iron-ore restrictions on China' (domestic backlash too high)."
+    ],
+    bottomLine: "If Issue C becomes 'US/EU-managed reserve,' Australia walks out (Australia must dominate the supply side).",
+    relations: [
+      ["US", "AUKUS ally, but demand parity"],
+      ["JP", "JOGMEC big patron; deep cooperation"],
+      ["EU", "FTA in negotiation; friendly"],
+      ["KR", "POSCO big customer; close"],
+      ["VN-IN", "Emerging mineral buyers; can offer long contracts"]
+    ]
+  }
+};
+
+// ============================================================
+// Routing — URL params
+// ============================================================
+function getParam(name) {
+  const u = new URL(window.location);
+  return u.searchParams.get(name);
+}
+
+let currentRole = null;
+let teacherMode = false;
+
+// ============================================================
+// Init
+// ============================================================
+function init() {
+  teacherMode = getParam("teacher") === "1";
+  if (teacherMode) {
+    document.getElementById("teacherBanner").style.display = "block";
+    document.getElementById("teacherPanel").style.display = "block";
+    document.getElementById("roleGate").style.display = "none";
+    renderTeacherTabs();
+  }
+  // Auto-load via URL
+  const r = getParam("role");
+  const c = getParam("code");
+  if (r && c) {
+    document.getElementById("roleSelect").value = r;
+    document.getElementById("roleCode").value = c;
+    unlockRole();
+  }
+}
+
+function unlockRole() {
+  const r = document.getElementById("roleSelect").value;
+  const c = document.getElementById("roleCode").value.trim().toUpperCase();
+  if (!r) { alert("Please select a delegation."); return; }
+  const role = ROLES[r];
+  if (!role) { alert("Invalid delegation."); return; }
+  if (c !== role.code) { alert("Incorrect delegation code. Ask your instructor."); return; }
+  currentRole = r;
+  renderDossier(r);
+  document.getElementById("roleGate").style.display = "none";
+  ["dossierPanel", "trackerPanel", "submissionPanel"].forEach(id => {
+    document.getElementById(id).classList.add("show");
+  });
+}
+
+function renderDossier(code) {
+  const r = ROLES[code];
+  document.getElementById("dossierTitle").innerHTML = `${r.flag} ${r.name} — Confidential Dossier`;
+  document.getElementById("dossierHeadline").textContent = r.headline;
+  document.getElementById("dossierObjectives").innerHTML = r.objectives.map(o => `<li>${o}</li>`).join("");
+  document.getElementById("dossierLeverage").innerHTML = r.leverage.map(o => `<li>${o}</li>`).join("");
+  document.getElementById("dossierConstraints").innerHTML = r.constraints.map(o => `<li>${o}</li>`).join("");
+  document.getElementById("dossierSecret").innerHTML = r.secret.map(o => `<li>${o}</li>`).join("");
+  document.getElementById("dossierBottomLine").textContent = r.bottomLine;
+  document.getElementById("dossierRelations").innerHTML = r.relations.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+}
+
+function switchRole() {
+  if (!confirm("Switch delegation? Your tracker entries will be preserved but the dossier will reload.")) return;
+  ["dossierPanel", "trackerPanel", "submissionPanel"].forEach(id => {
+    document.getElementById(id).classList.remove("show");
+  });
+  document.getElementById("roleGate").style.display = "block";
+  document.getElementById("roleSelect").value = "";
+  document.getElementById("roleCode").value = "";
+}
+
+// ============================================================
+// Tracker tabs
+// ============================================================
+function switchRound(id) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === id));
+  document.querySelectorAll(".round-panel").forEach(p => p.classList.toggle("show", p.id === id));
+}
+
+// ============================================================
+// Submission toggle
+// ============================================================
+function switchSub(form) {
+  document.querySelectorAll(".sub-btn").forEach(b => b.classList.toggle("active", b.dataset.form === form));
+  document.getElementById("mouForm").style.display = form === "mou" ? "block" : "none";
+  document.getElementById("dissForm").style.display = form === "diss" ? "block" : "none";
+}
+
+// ============================================================
+// Timer
+// ============================================================
+let timer = { remaining: 50 * 60, interval: null, phase: "Setup" };
+const PHASES = [
+  { upTo: 50 * 60, label: "Setup" },
+  { upTo: 45 * 60, label: "Opening Statements" },
+  { upTo: 35 * 60, label: "Issues A + B" },
+  { upTo: 30 * 60, label: "China Observer Round 1" },
+  { upTo: 20 * 60, label: "Issue C" },
+  { upTo: 10 * 60, label: "Issue D + China Round 2" },
+  { upTo: 5 * 60, label: "Drafting" },
+  { upTo: 0, label: "Final Statements" },
+];
+
+function fmt(s) {
+  const m = Math.floor(s / 60), ss = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+}
+function tick() {
+  if (timer.remaining <= 0) {
+    pauseTimer();
+    document.getElementById("timerDisplay").textContent = "00:00";
+    document.getElementById("phaseTag").textContent = "PHASE · TIME UP";
+    return;
+  }
+  timer.remaining--;
+  const d = document.getElementById("timerDisplay");
+  d.textContent = fmt(timer.remaining);
+  d.classList.toggle("warn", timer.remaining < 5 * 60);
+  // Update phase
+  for (const p of PHASES) {
+    if (timer.remaining > p.upTo) { document.getElementById("phaseTag").textContent = "PHASE · " + p.label; break; }
+  }
+}
+function startTimer() {
+  if (timer.interval) return;
+  timer.interval = setInterval(tick, 1000);
+}
+function pauseTimer() {
+  if (timer.interval) { clearInterval(timer.interval); timer.interval = null; }
+}
+function resetTimer() {
+  pauseTimer();
+  timer.remaining = 50 * 60;
+  document.getElementById("timerDisplay").textContent = "50:00";
+  document.getElementById("timerDisplay").classList.remove("warn");
+  document.getElementById("phaseTag").textContent = "PHASE · Setup";
+}
+
+// ============================================================
+// Teacher tabs
+// ============================================================
+function renderTeacherTabs() {
+  const tabs = document.getElementById("teacherTabs");
+  tabs.innerHTML = Object.keys(ROLES).map((k, i) =>
+    `<button class="tt-btn ${i === 0 ? 'active' : ''}" data-r="${k}" onclick="showTeacherDossier('${k}')">${ROLES[k].flag} ${k}</button>`
+  ).join("");
+  showTeacherDossier(Object.keys(ROLES)[0]);
+}
+function showTeacherDossier(code) {
+  const r = ROLES[code];
+  document.querySelectorAll(".tt-btn").forEach(b => b.classList.toggle("active", b.dataset.r === code));
+  const c = document.getElementById("teacherDossierContent");
+  c.innerHTML = `
+    <div style="padding: 14px; background: white; border: 1px solid var(--bone); border-radius: 4px;">
+      <h3>${r.flag} ${r.name} <span style="color:var(--mute); font-size:12px;">· code = ${r.code}</span></h3>
+      <p style="background:#FBE5E2; padding:8px 12px; border-left:4px solid var(--alert); margin:8px 0;"><strong>HEADLINE:</strong> ${r.headline}</p>
+      <h4 style="color:var(--navy); margin-top:10px;">Objectives</h4>
+      <ul>${r.objectives.map(o => `<li>${o}</li>`).join("")}</ul>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px;">
+        <div><h4 style="color:var(--navy);">Leverage</h4><ul>${r.leverage.map(o => `<li>${o}</li>`).join("")}</ul></div>
+        <div><h4 style="color:var(--navy);">Constraints</h4><ul>${r.constraints.map(o => `<li>${o}</li>`).join("")}</ul></div>
+      </div>
+      <h4 style="color:var(--alert); margin-top:10px;">Secret instructions</h4>
+      <ul>${r.secret.map(o => `<li>${o}</li>`).join("")}</ul>
+      <p style="background:var(--navy); color:white; padding:10px 14px; margin-top:10px; border-radius:4px;"><strong style="color:var(--amber);">Walk-out trigger:</strong> ${r.bottomLine}</p>
+    </div>
+  `;
+}
+
+function resetAll() {
+  if (!confirm("Reset all inputs (dossier, tracker, submission)?")) return;
+  document.querySelectorAll("textarea, input[type='text']").forEach(el => el.value = "");
+  resetTimer();
+}
+
+// ============================================================
+// Feedback — opens Google Form pre-filled with delegation
+// ============================================================
+const FEEDBACK_URL = "https://forms.gle/PENDING_REPLACE_AFTER_FORM_CREATED";
+function openFeedback() {
+  if (FEEDBACK_URL.includes("PENDING")) {
+    alert("The feedback form is being set up. Please ask your instructor for the link.");
+    return;
+  }
+  const role = encodeURIComponent(currentRole || "");
+  const url = FEEDBACK_URL +
+    (FEEDBACK_URL.includes("?") ? "&" : "?") +
+    `usp=pp_url&entry.ACTIVITY=Activity%20B&entry.DELEGATION=${role}`;
+  window.open(url, "_blank", "noopener");
+}
+
+// init
+init();
+</script>
+
+</body>
+</html>

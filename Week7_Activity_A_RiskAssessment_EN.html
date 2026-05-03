@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity A · Supply Chain Risk Assessment · IPE Week 7</title>
+<style>
+:root {
+  --navy: #0F2238;
+  --navy-deep: #071528;
+  --amber: #E8C547;
+  --amber-deep: #C9A92F;
+  --steel: #5B7B9A;
+  --cream: #F5F1E8;
+  --bone: #EAE3D2;
+  --ink: #1A1A1A;
+  --mute: #6B7280;
+  --alert: #C03A2B;
+  --jade: #3F8268;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--cream); color: var(--ink); font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.5; font-size: 15px; }
+body { min-height: 100vh; padding-bottom: 80px; }
+
+/* Header */
+.hero { background: var(--navy); color: white; padding: 28px 40px 24px; border-bottom: 6px solid var(--amber); position: relative; }
+.hero .eyebrow { font-size: 11px; letter-spacing: 4px; color: var(--amber); text-transform: uppercase; margin-bottom: 8px; }
+.hero h1 { font-family: Georgia, serif; font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+.hero .subtitle { color: var(--bone); font-style: italic; font-size: 14px; }
+.hero .meta { position: absolute; right: 40px; top: 30px; text-align: right; font-size: 12px; color: var(--steel); }
+.hero .group-input { background: rgba(255,255,255,0.08); border: 1px solid var(--steel); color: white; padding: 6px 10px; border-radius: 4px; margin-top: 6px; font-size: 13px; width: 200px; }
+.hero .group-input::placeholder { color: var(--steel); }
+
+/* Live metrics bar */
+.metrics-bar { background: var(--navy-deep); color: white; padding: 14px 40px; display: flex; gap: 32px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #1a3047; }
+.metric { display: flex; flex-direction: column; min-width: 100px; }
+.metric .num { font-family: 'Arial Black', sans-serif; font-size: 26px; color: var(--amber); line-height: 1; }
+.metric .label { font-size: 10px; color: var(--bone); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+.metric.warn .num { color: var(--alert); }
+
+/* Sections */
+.container { padding: 24px 40px; max-width: 1280px; margin: 0 auto; }
+section { background: white; border: 1px solid var(--bone); border-radius: 6px; padding: 20px 24px; margin-bottom: 20px; }
+section h2 { font-family: Georgia, serif; color: var(--navy); font-size: 22px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--amber); }
+section h3 { color: var(--navy); font-size: 15px; font-weight: 700; margin: 14px 0 8px; }
+section p, section li { font-size: 14px; line-height: 1.65; }
+section ul { padding-left: 22px; margin: 6px 0; }
+section ol { padding-left: 22px; margin: 6px 0; }
+section li { margin-bottom: 5px; }
+
+.intro-toggle { background: none; border: 1px solid var(--steel); color: var(--steel); padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; float: right; }
+.intro-toggle:hover { background: var(--steel); color: white; }
+.intro-body.collapsed { display: none; }
+
+/* Company picker */
+.company-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 10px; }
+.company-card { border: 2px solid var(--bone); border-radius: 6px; padding: 14px; cursor: pointer; transition: all 0.15s; background: white; }
+.company-card:hover { border-color: var(--steel); transform: translateY(-2px); }
+.company-card.active { border-color: var(--navy); background: var(--navy); color: white; box-shadow: 0 4px 12px rgba(15,34,56,0.25); }
+.company-card.active .sector { color: var(--amber); }
+.company-card .code { font-family: 'Arial Black', sans-serif; font-size: 18px; color: var(--amber); }
+.company-card.active .code { color: var(--amber); }
+.company-card .name { font-weight: 700; margin: 4px 0; font-size: 14px; }
+.company-card .sector { font-size: 11px; color: var(--steel); }
+
+/* Dossier */
+.dossier { display: none; padding: 18px; background: var(--cream); border-left: 5px solid var(--amber); border-radius: 0 6px 6px 0; margin-top: 14px; }
+.dossier.show { display: block; }
+.dossier .blurb { font-style: italic; color: var(--navy); font-size: 14px; margin-bottom: 10px; }
+.dossier .col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 8px; }
+.dossier h4 { font-size: 12px; letter-spacing: 1px; color: var(--steel); text-transform: uppercase; margin-bottom: 6px; }
+.dossier ul { font-size: 13px; padding-left: 18px; }
+.dossier ul li { margin-bottom: 4px; }
+.dossier .chokepoint-box { background: #FBE5E2; border-left: 4px solid var(--alert); padding: 10px 14px; }
+.dossier .chokepoint-box h4 { color: var(--alert); }
+
+/* Steps */
+.step { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px dashed var(--bone); }
+.step:last-child { border-bottom: none; }
+.step-tag { display: inline-block; background: var(--amber); color: var(--navy); padding: 3px 10px; border-radius: 3px; font-weight: 700; font-size: 11px; letter-spacing: 1px; margin-bottom: 6px; }
+.step h3 { display: inline; margin-left: 6px; }
+.step .hint { font-size: 12px; color: var(--mute); margin: 4px 0 10px; }
+
+textarea.tree { width: 100%; min-height: 100px; padding: 10px; border: 1px solid var(--bone); border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; resize: vertical; }
+textarea.tree:focus { outline: none; border-color: var(--steel); }
+
+/* Risk matrix */
+.matrix-wrap { overflow-x: auto; }
+table.matrix { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+table.matrix th { background: var(--navy); color: white; padding: 8px 6px; text-align: left; font-size: 11px; letter-spacing: 0.5px; }
+table.matrix td { padding: 4px 6px; border-bottom: 1px solid var(--bone); vertical-align: top; }
+table.matrix tr:nth-child(even) td { background: #FAF8F2; }
+table.matrix tr.spof td { background: #FBE5E2 !important; }
+table.matrix input[type="text"], table.matrix select { width: 100%; padding: 5px 6px; border: 1px solid var(--bone); border-radius: 3px; font-size: 12px; background: white; }
+table.matrix input[type="text"]:focus, table.matrix select:focus { outline: none; border-color: var(--steel); }
+table.matrix .hash { color: var(--mute); width: 24px; text-align: center; font-weight: 700; }
+table.matrix select.risk-H { background: #FBE5E2; color: var(--alert); font-weight: 700; }
+table.matrix select.risk-M { background: #FFF3D6; color: #8A6D00; font-weight: 700; }
+table.matrix select.risk-L { background: #E3EFE7; color: var(--jade); font-weight: 700; }
+.spof-toggle { width: 22px; height: 22px; }
+
+/* Executive summary */
+.exec-summary { padding: 14px; background: var(--cream); border-radius: 6px; line-height: 2.0; font-size: 14px; }
+.exec-summary input { display: inline-block; padding: 3px 8px; border: none; border-bottom: 2px solid var(--amber); background: transparent; font-size: 14px; min-width: 180px; }
+.exec-summary input:focus { outline: none; border-bottom-color: var(--navy); background: white; }
+
+.preview-summary { margin-top: 14px; padding: 14px; background: var(--navy); color: white; border-radius: 6px; font-size: 14px; line-height: 1.7; min-height: 60px; }
+.preview-summary .placeholder { color: var(--steel); font-style: italic; }
+
+/* Reflection */
+.reflect-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.reflect-option { padding: 10px; border: 1px solid var(--bone); border-radius: 4px; cursor: pointer; font-size: 13px; }
+.reflect-option:hover { border-color: var(--steel); }
+.reflect-option.active { border-color: var(--navy); background: var(--cream); }
+textarea.reflect { width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--bone); border-radius: 4px; font-size: 13px; resize: vertical; }
+
+/* Action bar */
+.action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy); padding: 12px 40px; display: flex; gap: 12px; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); }
+.action-bar button { padding: 8px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 700; }
+.btn-print { background: var(--amber); color: var(--navy); }
+.btn-print:hover { background: var(--amber-deep); }
+.btn-reset { background: transparent; color: var(--bone); border: 1px solid var(--steel) !important; }
+.btn-reset:hover { background: var(--alert); border-color: var(--alert) !important; color: white; }
+.btn-feedback { background: var(--jade); color: white; border: none; cursor: pointer; }
+.btn-feedback:hover { background: #2D6650; }
+.action-bar .spacer { flex: 1; }
+.action-bar .footnote { color: var(--steel); font-size: 11px; }
+
+/* Print */
+@media print {
+  .action-bar, .intro-toggle, .hero .group-input { display: none !important; }
+  body { background: white; }
+  section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  .hero { padding: 16px 24px; }
+  .container { padding: 16px 24px; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .company-grid { grid-template-columns: repeat(2, 1fr); }
+  .dossier .col-grid { grid-template-columns: 1fr; }
+  .reflect-options { grid-template-columns: 1fr; }
+  .hero .meta { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">IPE · WEEK 7 · ACTIVITY A</div>
+  <h1>Supply Chain Risk Assessment</h1>
+  <div class="subtitle">A 50-minute political-risk workshop. Pick a multinational. Find its single-points-of-failure.</div>
+  <div class="meta">
+    Group name:<br>
+    <input type="text" class="group-input" id="groupName" placeholder="e.g., Group 3 — TSMC">
+  </div>
+</header>
+
+<div class="metrics-bar">
+  <div class="metric">
+    <div class="num" id="mSelected">—</div>
+    <div class="label">Company</div>
+  </div>
+  <div class="metric warn">
+    <div class="num" id="mSpof">0</div>
+    <div class="label">SPOFs identified</div>
+  </div>
+  <div class="metric">
+    <div class="num" id="mHigh">0</div>
+    <div class="label">High-risk nodes</div>
+  </div>
+  <div class="metric">
+    <div class="num" id="mFilled">0/8</div>
+    <div class="label">Matrix rows filled</div>
+  </div>
+  <div class="metric">
+    <div class="num" id="mProgress">0%</div>
+    <div class="label">Progress</div>
+  </div>
+</div>
+
+<main class="container">
+
+  <section>
+    <button class="intro-toggle" onclick="toggleIntro()">Hide brief</button>
+    <h2>Mission Brief</h2>
+    <div class="intro-body" id="introBody">
+      <p>Your group is the political-risk team at an investment advisory. The board has just assigned you to assess the supply-chain political risk of one multinational. You have <strong>50 minutes</strong>.</p>
+      <p>The board cares about: where in this MNC's supply chain are the single-points-of-failure? If the US–China rivalry escalates through 2027, where should the firm reposition between <em>efficiency</em>, <em>resilience</em>, and <em>political alignment</em>?</p>
+      <h3>Steps</h3>
+      <ol>
+        <li><strong>5 min</strong> — Read your assigned dossier carefully. Circle terms you don't know; assign a teammate to look them up.</li>
+        <li><strong>10 min</strong> — Sketch a 5–8 layer supply chain tree (raw materials → end customer). Mark the dominant supplier (country/firm) at each node.</li>
+        <li><strong>15 min</strong> — Fill the risk matrix. For each node, ask: <em>substitutability? geo risk? impact if disrupted?</em></li>
+        <li><strong>10 min</strong> — Tag at least 2 single-points-of-failure (toggle the SPOF flag). Write a 100-word executive summary.</li>
+        <li><strong>10 min</strong> — Make a one-page infographic (paper or Canva). 3-minute group report.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Step 1 · Pick Your Company</h2>
+    <p style="color:var(--mute); font-size:13px;">Click a card. The teacher will assign one company per group.</p>
+    <div class="company-grid" id="companyGrid"></div>
+    <div class="dossier" id="dossierPanel"></div>
+  </section>
+
+  <section>
+    <div class="step">
+      <span class="step-tag">STEP 2</span><h3>Sketch the Supply Chain Tree</h3>
+      <div class="hint">5–8 layers, top to bottom. Use indentation to show tier. Example: "TSMC ← ASML (NL) ← Carl Zeiss SMT (DE)".</div>
+      <textarea class="tree" id="tree" placeholder="Layer 1: End product&#10;  Layer 2: ...&#10;    Layer 3: ..."></textarea>
+    </div>
+
+    <div class="step">
+      <span class="step-tag">STEP 3</span><h3>Risk Matrix</h3>
+      <div class="hint">For each node: <strong>Substitutability</strong> = how easy to replace. <strong>Geo Risk H/M/L</strong> — H = node has been or could be weaponized in last 5 years (e.g., China rare-earth refining, US EDA, ASML EUV). M = stable but structurally fragile. L = many alternatives. <strong>SPOF</strong> = single-point-of-failure (cannot be routed around).</div>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th class="hash">#</th>
+              <th>Supply chain node</th>
+              <th>Country / Firm</th>
+              <th>Substitutability</th>
+              <th>Geo risk</th>
+              <th>Impact if disrupted</th>
+              <th style="text-align:center; width:50px;">SPOF?</th>
+            </tr>
+          </thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-tag">STEP 4</span><h3>Executive Summary (100 words)</h3>
+      <div class="hint">Fill the blanks. The preview below updates live.</div>
+      <div class="exec-summary" id="execScaffold">
+        The two most critical single-points-of-failure for
+        <input type="text" id="es-company" placeholder="company"> are
+        (1) <input type="text" id="es-spof1" placeholder="first SPOF, e.g., ASML EUV"> and
+        (2) <input type="text" id="es-spof2" placeholder="second SPOF">.
+        Under current US–China trajectory, the node most likely to be hit in the next 24 months is
+        <input type="text" id="es-near" placeholder="node, e.g., advanced lithography">,
+        and our recommended hedge is
+        <input type="text" id="es-hedge" placeholder="hedging strategy">.
+        If that hedge is not viable, the firm's plan B is
+        <input type="text" id="es-planB" placeholder="plan B">.
+      </div>
+      <div class="preview-summary" id="execPreview">
+        <span class="placeholder">Your executive summary will preview here as you fill the blanks above.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-tag">STEP 5</span><h3>Reflection (3 sentences)</h3>
+      <div class="hint">Pick one prompt and write 3 sentences.</div>
+      <div class="reflect-options" id="reflectOptions">
+        <div class="reflect-option" data-q="Is this firm's chokepoint a side-effect of market efficiency, or a deliberate geopolitical outcome?">A · Market efficiency or geopolitics?</div>
+        <div class="reflect-option" data-q="If you sat on this firm's board, what premium would you pay for resilience?">B · The board director's view on the cost of resilience</div>
+        <div class="reflect-option" data-q="How does this firm's chokepoint pattern resemble or differ from W6's weaponized financial interdependence?">C · Compared to W6's financial weaponization</div>
+      </div>
+      <textarea class="reflect" id="reflectAnswer" placeholder="Your reflection..."></textarea>
+    </div>
+  </section>
+
+  <section>
+    <h2>Grading Anchors (visible to you)</h2>
+    <ul>
+      <li><strong>Supply chain tree (25%)</strong> — at least 5 layers; nodes specify country or firm.</li>
+      <li><strong>Risk judgement logic (25%)</strong> — every H/M/L has reasoning, not just intuition.</li>
+      <li><strong>SPOF identification (25%)</strong> — at least 2 SPOFs flagged with explanation of why they cannot be routed around.</li>
+      <li><strong>Infographic & report clarity (25%)</strong> — your 3-minute report makes another group instantly understand the risk.</li>
+    </ul>
+  </section>
+
+</main>
+
+<div class="action-bar">
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+  <button class="btn-feedback" onclick="openFeedback('A')">📝 Submit Feedback</button>
+  <button class="btn-reset" onclick="resetAll()">↻ Reset all</button>
+  <span class="spacer"></span>
+  <span class="footnote">IPE Week 7 · Dr. Roger C. Liu · IMAPA Fall 2025</span>
+</div>
+
+<script>
+const COMPANIES = [
+  {
+    code: "TSMC",
+    name: "TSMC (Taiwan Semiconductor)",
+    sector: "Semiconductors — downstream foundry",
+    blurb: "World's leading advanced-node foundry. ~60% of global foundry revenue, >90% of sub-7nm capacity.",
+    clues: [
+      "FY24 wafer revenue leader (IC Insights, Counterpoint)",
+      "CHIPS Act subsidy of $6.6B for Arizona fab",
+      "Customers: Apple (>20% of revenue), NVIDIA, AMD, Qualcomm, Broadcom",
+      "EUV equipment: 100% from ASML",
+      "Tier-2: Japan (photoresists, silicon wafers), Korea (specialty gases), US (EDA)"
+    ],
+    chokes: [
+      "EUV lithography (ASML monopoly)",
+      "Silicon wafers (Shin-Etsu, SUMCO ~50%+)",
+      "EDA tools (Synopsys + Cadence ~80%)",
+      "Geography: >90% leading-edge capacity on the home island"
+    ]
+  },
+  {
+    code: "ASML",
+    name: "ASML",
+    sector: "Semiconductors — upstream equipment",
+    blurb: "World's only EUV lithography supplier. Dutch-listed, subject to Dutch + EU + US export controls.",
+    clues: [
+      "FY24 EUV system orders ~50 units",
+      "Customers: TSMC, Samsung, Intel, SK Hynix, Micron",
+      "Twinscan EXE (High-NA EUV) shipments started 2024–25",
+      "Carl Zeiss SMT (DE) sole optics supplier",
+      "Subject to Dutch foreign-trade law + US FDPR — dual-leverage regime"
+    ],
+    chokes: [
+      "Carl Zeiss SMT optics (single supplier)",
+      "Cymer (light source — acquired by ASML but supply chain concentrated)",
+      "US-NL bilateral export-control negotiation",
+      "China market ~20% but increasingly restricted"
+    ]
+  },
+  {
+    code: "FOXCONN",
+    name: "Foxconn / Hon Hai",
+    sector: "Consumer electronics — assembly",
+    blurb: "World's largest electronics contract manufacturer. Assembles ~70% of global iPhones. Taiwan-headquartered.",
+    clues: [
+      "FY24 revenue ~$210B; gross margin ~6%",
+      "iPhone assembly: Zhengzhou (China), Chennai (India), Vietnam, Brazil",
+      "Customers: Apple (~50% of revenue), Sony, Dell, HP, Cisco",
+      "Tier-2: Chinese mid-stream components, Taiwanese connectors, Japanese camera modules",
+      "Expanding into EVs (Foxtron) and OSAT semiconductor packaging"
+    ],
+    chokes: [
+      "Zhengzhou facility = global iPhone assembly hub",
+      "Apple = single largest customer (business risk concentration)",
+      "India capacity expanding but supply chain depth still shallow",
+      "China mid-stream component dependence remains very high (China+1, but mostly China-content)"
+    ]
+  },
+  {
+    code: "BYD",
+    name: "BYD",
+    sector: "EVs + batteries — vertically integrated",
+    blurb: "China's largest, world's #2 EV maker. Vertically integrated: own batteries, chips, vehicles.",
+    clues: [
+      "FY24 EV deliveries ~3.7M (incl. hybrids)",
+      "Blade Battery — LFP chemistry leader",
+      "EU 2024/10 anti-subsidy tariff +17% on Chinese EVs",
+      "Lithium: own mining + Chinese domestic supply",
+      "Overseas expansion: Thailand, Brazil, Hungary plants"
+    ],
+    chokes: [
+      "Lithium refining heavily concentrated in China (national-level chokepoint)",
+      "EU anti-subsidy tariff = political chokepoint",
+      "Overseas distribution depends on local third-party dealers",
+      "High-end semis (MCU, IGBT) still partially externally sourced"
+    ]
+  },
+  {
+    code: "MP",
+    name: "MP Materials",
+    sector: "Critical minerals — upstream rare earths",
+    blurb: "Only at-scale US rare-earth miner; California's Mountain Pass site. DOD strategic partner.",
+    clues: [
+      "FY24 NdPr oxide production ~6,000 tons",
+      "Customers: GM, Pentagon, Raytheon",
+      "DPA Title III funding for US-domestic refining build-out",
+      "Currently ~70%+ of mined output still sent to China for refining (transition in progress)",
+      "Texas Stage II refining facility under construction"
+    ],
+    chokes: [
+      "Mid-stream refining still primarily in China (the lethal chokepoint)",
+      "Permanent magnet manufacturing (downstream) almost entirely in China",
+      "US lacks mature downstream demand ecosystem",
+      "Policy-dependent: subsidies + defense procurement"
+    ]
+  },
+  {
+    code: "GLENCORE",
+    name: "Glencore",
+    sector: "Critical minerals — upstream multi-metal",
+    blurb: "Swiss-/UK-listed; one of the world's largest cobalt producers; core DRC mining holder.",
+    clues: [
+      "FY24 cobalt production ~38,000 tons (~25% of global)",
+      "DRC: Mutanda + Katanga mines",
+      "Cobalt sent primarily to: Finland, Asia (China + Korea) for refining",
+      "Customers: BMW, CATL, LG Energy, Tesla (via offtake)",
+      "Faces DRC political risk + ESG litigation"
+    ],
+    chokes: [
+      "DRC single-country political risk concentration",
+      "Cobalt refining ~75% China — even with Glencore mining, output flows to China",
+      "Child labor & environmental litigation = ESG chokepoint",
+      "Alternative chemistry (LFP) eroding cobalt demand"
+    ]
+  }
+];
+
+let selected = null;
+
+// Build company grid
+function renderCompanies() {
+  const grid = document.getElementById("companyGrid");
+  grid.innerHTML = COMPANIES.map(c => `
+    <div class="company-card" data-code="${c.code}" onclick="selectCompany('${c.code}')">
+      <div class="code">${c.code}</div>
+      <div class="name">${c.name}</div>
+      <div class="sector">${c.sector}</div>
+    </div>
+  `).join("");
+}
+
+function selectCompany(code) {
+  selected = COMPANIES.find(c => c.code === code);
+  document.querySelectorAll(".company-card").forEach(el => el.classList.toggle("active", el.dataset.code === code));
+  renderDossier();
+  document.getElementById("mSelected").textContent = code;
+  document.getElementById("es-company").value = selected.name;
+  updateExecPreview();
+  updateProgress();
+}
+
+function renderDossier() {
+  const el = document.getElementById("dossierPanel");
+  if (!selected) { el.classList.remove("show"); return; }
+  el.classList.add("show");
+  el.innerHTML = `
+    <div class="blurb"><strong>${selected.name}</strong> — ${selected.blurb}</div>
+    <div class="col-grid">
+      <div>
+        <h4>Key Intelligence (5 clues)</h4>
+        <ul>${selected.clues.map(c => `<li>${c}</li>`).join("")}</ul>
+      </div>
+      <div class="chokepoint-box">
+        <h4>⚠ Chokepoint Hints</h4>
+        <ul>${selected.chokes.map(c => `<li>${c}</li>`).join("")}</ul>
+      </div>
+    </div>
+  `;
+}
+
+// Build matrix
+function renderMatrix() {
+  const body = document.getElementById("matrixBody");
+  body.innerHTML = "";
+  for (let i = 1; i <= 8; i++) {
+    const tr = document.createElement("tr");
+    tr.dataset.row = i;
+    tr.innerHTML = `
+      <td class="hash">${i}</td>
+      <td><input type="text" class="m-node" placeholder="e.g., EUV lithography"></td>
+      <td><input type="text" class="m-where" placeholder="e.g., Netherlands / ASML"></td>
+      <td>
+        <select class="m-sub">
+          <option value="">—</option>
+          <option>Many alternatives</option>
+          <option>Few alternatives</option>
+          <option>Sole source</option>
+        </select>
+      </td>
+      <td>
+        <select class="m-risk" onchange="updateRiskColor(this); updateMetrics();">
+          <option value="">—</option>
+          <option value="L">L · Low</option>
+          <option value="M">M · Medium</option>
+          <option value="H">H · High</option>
+        </select>
+      </td>
+      <td><input type="text" class="m-impact" placeholder="e.g., chain freezes within months"></td>
+      <td style="text-align:center;">
+        <input type="checkbox" class="spof-toggle" onchange="toggleSpof(this); updateMetrics();">
+      </td>
+    `;
+    body.appendChild(tr);
+  }
+  body.addEventListener("input", updateMetrics);
+}
+
+function updateRiskColor(sel) {
+  sel.classList.remove("risk-H", "risk-M", "risk-L");
+  if (sel.value) sel.classList.add("risk-" + sel.value);
+}
+
+function toggleSpof(cb) {
+  cb.closest("tr").classList.toggle("spof", cb.checked);
+}
+
+function updateMetrics() {
+  const rows = document.querySelectorAll("#matrixBody tr");
+  let filled = 0, high = 0, spof = 0;
+  rows.forEach(r => {
+    const node = r.querySelector(".m-node").value.trim();
+    const where = r.querySelector(".m-where").value.trim();
+    if (node && where) filled++;
+    if (r.querySelector(".m-risk").value === "H") high++;
+    if (r.querySelector(".spof-toggle").checked) spof++;
+  });
+  document.getElementById("mFilled").textContent = filled + "/8";
+  document.getElementById("mHigh").textContent = high;
+  document.getElementById("mSpof").textContent = spof;
+  updateProgress();
+}
+
+function updateProgress() {
+  let pts = 0;
+  if (selected) pts += 20;
+  if (document.getElementById("tree").value.trim().length > 30) pts += 15;
+  const filled = parseInt(document.getElementById("mFilled").textContent.split("/")[0]);
+  pts += Math.min(filled * 4, 32);
+  const spof = parseInt(document.getElementById("mSpof").textContent);
+  if (spof >= 2) pts += 13;
+  const blanks = ["es-spof1", "es-spof2", "es-near", "es-hedge", "es-planB"];
+  const filledExec = blanks.filter(id => document.getElementById(id).value.trim()).length;
+  pts += Math.round(filledExec / blanks.length * 12);
+  if (document.getElementById("reflectAnswer").value.trim().length > 30) pts += 8;
+  document.getElementById("mProgress").textContent = Math.min(pts, 100) + "%";
+}
+
+// Executive summary preview
+function updateExecPreview() {
+  const company = document.getElementById("es-company").value || "the firm";
+  const spof1 = document.getElementById("es-spof1").value || "[SPOF #1]";
+  const spof2 = document.getElementById("es-spof2").value || "[SPOF #2]";
+  const near = document.getElementById("es-near").value || "[node]";
+  const hedge = document.getElementById("es-hedge").value || "[hedging strategy]";
+  const planB = document.getElementById("es-planB").value || "[plan B]";
+  const anyFilled = document.getElementById("es-spof1").value || document.getElementById("es-spof2").value;
+  const preview = document.getElementById("execPreview");
+  if (!anyFilled && !selected) {
+    preview.innerHTML = `<span class="placeholder">Your executive summary will preview here as you fill the blanks above.</span>`;
+  } else {
+    preview.innerHTML = `The two most critical single-points-of-failure for <strong>${company}</strong> are (1) <strong style="color:var(--amber)">${spof1}</strong> and (2) <strong style="color:var(--amber)">${spof2}</strong>. Under the current US–China trajectory, the node most likely to be hit in the next 24 months is <strong>${near}</strong>, and our recommended hedge is <strong>${hedge}</strong>. If that hedge is not viable, the firm's plan B is <strong>${planB}</strong>.`;
+  }
+  updateProgress();
+}
+
+// Reflection
+function setupReflect() {
+  document.querySelectorAll(".reflect-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      document.querySelectorAll(".reflect-option").forEach(o => o.classList.remove("active"));
+      opt.classList.add("active");
+      const a = document.getElementById("reflectAnswer");
+      a.placeholder = "Q: " + opt.dataset.q;
+    });
+  });
+}
+
+// Intro toggle
+function toggleIntro() {
+  const body = document.getElementById("introBody");
+  const btn = document.querySelector(".intro-toggle");
+  body.classList.toggle("collapsed");
+  btn.textContent = body.classList.contains("collapsed") ? "Show brief" : "Hide brief";
+}
+
+// Reset
+function resetAll() {
+  if (!confirm("Reset all inputs?")) return;
+  document.querySelectorAll("input[type='text'], textarea").forEach(el => el.value = "");
+  document.querySelectorAll("select").forEach(el => { el.value = ""; el.className = el.className.replace(/risk-[HML]/g, ""); });
+  document.querySelectorAll("input[type='checkbox']").forEach(el => el.checked = false);
+  document.querySelectorAll("tr.spof").forEach(r => r.classList.remove("spof"));
+  document.querySelectorAll(".company-card").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".reflect-option").forEach(el => el.classList.remove("active"));
+  document.getElementById("dossierPanel").classList.remove("show");
+  selected = null;
+  document.getElementById("mSelected").textContent = "—";
+  updateMetrics();
+  updateExecPreview();
+}
+
+// Init
+renderCompanies();
+renderMatrix();
+setupReflect();
+
+// Bind exec summary inputs
+["es-spof1", "es-spof2", "es-near", "es-hedge", "es-planB", "es-company"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updateExecPreview);
+});
+document.getElementById("tree").addEventListener("input", updateProgress);
+document.getElementById("reflectAnswer").addEventListener("input", updateProgress);
+
+// ============================================================
+// Feedback — opens Google Form pre-filled with group + company
+// FEEDBACK_URL is replaced after the form is created.
+// ============================================================
+const FEEDBACK_URL = "https://forms.gle/PENDING_REPLACE_AFTER_FORM_CREATED";
+function openFeedback(activity) {
+  if (FEEDBACK_URL.includes("PENDING")) {
+    alert("The feedback form is being set up. Please ask your instructor for the link.");
+    return;
+  }
+  const group = encodeURIComponent(document.getElementById("groupName")?.value || "");
+  const company = encodeURIComponent(selected?.code || "");
+  // Google Forms entry IDs are placeholders — replace with real IDs after creating the form.
+  const url = FEEDBACK_URL +
+    (FEEDBACK_URL.includes("?") ? "&" : "?") +
+    `usp=pp_url&entry.GROUP=${group}&entry.ACTIVITY=Activity%20${activity}&entry.COMPANY=${company}`;
+  window.open(url, "_blank", "noopener");
+}
+</script>
+
+</body>
+</html>
